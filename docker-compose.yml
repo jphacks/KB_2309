@@ -1,9 +1,16 @@
 version: '3'
 services:
-  python-app:
+  estimator:
     build:
-      context: ./python-app
+      context: ./estimator
     ports:
       - "8000:8000"
     volumes:
-      - ./python-app:/app/python-app
+      - ./estimator:/app/estimator
+  server:
+    build:
+      context: ./server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app/server
