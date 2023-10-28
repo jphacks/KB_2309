@@ -3,7 +3,7 @@ import hashlib
 import time
 
 # SQLiteデータベースに接続
-conn = sqlite3.connect('./database/database.db')
+conn = sqlite3.connect('./database.db')
 
 # カーソルを取得
 cur = conn.cursor()
