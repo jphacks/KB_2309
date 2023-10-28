@@ -5,11 +5,10 @@ FROM python:3.9
 WORKDIR /app
 
 # 必要なファイルをコピー
-COPY main.py /app/
-COPY requirements.txt /app/
+ADD . /app
 
 # 依存関係をインストール
 RUN pip install -r requirements.txt
 
 # アプリケーションを実行
-CMD ["flask", "--app", "main", "--debug", "run", "--host=0.0.0.0"]
+CMD ["flask", "--app", "main", "run", "--host=0.0.0.0", "--reload"]
