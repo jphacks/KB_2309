@@ -17,7 +17,7 @@ COPY requirements.txt /app/
 # 依存関係をインストール
 RUN pip install -r requirements.txt
 
-WORKDIR /app/python-app
+WORKDIR /app/src
 
 # アプリケーションを実行
 CMD ["python", "app.py"]

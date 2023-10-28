@@ -1,11 +1,11 @@
 version: '3'
 services:
-  python-app:
+  src:
     build:
-      context: ./python-app
+      context: ./src
     ports:
       - "8000:8000"
     volumes:
-      - ./python-app:/app/python-app
+      - ./src:/app/src
       - ./img:/app/img
       - /dev/video0:/dev/video0
