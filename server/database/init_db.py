@@ -23,5 +23,14 @@ cur.execute('''CREATE TABLE IF NOT EXISTS side_photos (
     foreign key(access_id) references access(id)
 )''')
 
+cur.execute('''CREATE TABLE IF NOT EXISTS front_photos (
+    access_id TEXT,
+    xxx_arg float,
+    yyyy_arg float,
+    file_path TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    foreign key(access_id) references access(id)
+    )''')
+
 cur.close()
 
