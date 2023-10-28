@@ -2,10 +2,14 @@
 pose_estimator/src/model/pose_iter_440000.caffemodel
 
 # Remove pycache
-src/__pycache__
+pose_estimator/src/__pycache__/*.pyc
 
 # Recording output
 pose_estimator/src/recording/file.csv
+
+pose_estimator/src/recording/*.mp4
+pose_estimator/src/output_images/*.jpg
+
 
 # Video test
 pose_estimator/src/video/*.mp4
