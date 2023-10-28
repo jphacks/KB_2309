@@ -9,3 +9,6 @@ pose_estimator/src/recording/file.csv
 
 # Video test
 pose_estimator/src/video/*.mp4
+
+.vscode
+```
