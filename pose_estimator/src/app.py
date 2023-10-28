@@ -3,13 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from trig import five_angle, to_joints
 
+from preprocess import get_frames
+
 CAPTURE_FILE =  "video/test_video_straight.mp4"
 LINE_SCALE = 50
 
 rec = open('recording/file.csv', 'w')
 
 from io import TextIOWrapper
-def writeOnFile(data: list[list], file: TextIOWrapper):
+def writeOnFile(data, file):
     line = ""
     for point in range(len(data)):
         if data[point]:
@@ -17,8 +19,8 @@ def writeOnFile(data: list[list], file: TextIOWrapper):
         else:
             line += "(None, None)"
         line += ("\n" if point == (len(data) - 1) else ", ")
-    # file.write(line)
-    # file.flush()
+    file.write(line)
+    file.flush()
     print(line)
 
 newLine = 0
@@ -27,6 +29,8 @@ def writeOnFrame(frame, text: tuple, good=True, position=(50,50)):
     global newLine
     cv2.putText(frame, text, (position[0], position[1] + newLine), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0) if good else (0,0,255), 2)
     newLine += LINE_SCALE
+
+
 
 protoFile = "model/pose_deploy_linevec.prototxt"
 weightsFile = "model/pose_iter_440000.caffemodel"
@@ -56,27 +60,21 @@ POSE_PAIRS = [[1,0] # neck-head
             ,[12,13] # knee-ankle left
 ]
 
-cap = cv2.VideoCapture(CAPTURE_FILE)
-desired_fps = 10
-cap.set(cv2.CAP_PROP_FPS, desired_fps)
+
+# GET THE LIST OF FRAMES
+frame_list, cap = get_frames(CAPTURE_FILE)
 
 frameWidth = int(cap.get(3))
 frameHeight = int(cap.get(4))
 threshold = 0.01
 
-
 inWidth = 320  # Adjust to a lower resolution
 inHeight = 240  # Adjust to a lower resolution
 
-
 net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
-while cap.isOpened():
-    ret, frame = cap.read()  # ビデオからフレームを読み込む
-    if not ret:
-        break
 
-    # フレームをネットワークの入力形式に変換
+for num, frame in enumerate(frame_list):
     inpBlob = cv2.dnn.blobFromImage(frame, 1.0 / 255, (inWidth, inHeight), (0, 0, 0), swapRB=False, crop=False)
     net.setInput(inpBlob)
     output = net.forward()
@@ -125,8 +123,10 @@ while cap.isOpened():
     
     newLine = 0
     
-    cv2.imshow('Skeleton', frame)
-    # writeOnFile(points, rec)
+    # cv2.imshow('Skeleton', frame)
+    
+    cv2.imwrite('output/frame_'+str(num)+'.jpg', frame)
+    writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

@@ -1,15 +1,18 @@
 # Model too big
-src/model/pose_iter_440000.caffemodel
+pose_estimator/src/model/pose_iter_440000.caffemodel
 
 # Remove pycache
-src/__pycache__
+pose_estimator/src/__pycache__/*.pyc
 
 # Recording output
-src/recording/file.csv
+pose_estimator/src/recording/file.csv
+
+pose_estimator/src/recording/*.mp4
+pose_estimator/src/output_images/*.jpg
+
 
 # Video test
-src/video/*.mp4
-python-app/model/learnopencv
+pose_estimator/src/video/*.mp4
 .DS_Store
 
 # Created by https://www.toptal.com/developers/gitignore/api/react
@@ -32,3 +35,5 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react
+
+.vscode
