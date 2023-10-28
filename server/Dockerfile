@@ -12,4 +12,4 @@ COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
 # アプリケーションを実行
-CMD ["flask", "--app", "main", "run", "--host=0.0.0.0"]
+CMD ["flask", "--app", "main", "--debug", "run", "--host=0.0.0.0"]
