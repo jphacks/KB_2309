@@ -2,13 +2,38 @@
 pose_estimator/src/model/pose_iter_440000.caffemodel
 
 # Remove pycache
-src/__pycache__
+pose_estimator/src/__pycache__/*.pyc
 
 # Recording output
 pose_estimator/src/recording/file.csv
 
+pose_estimator/src/recording/*.mp4
+pose_estimator/src/output_images/*.jpg
+
+
 # Video test
 pose_estimator/src/video/*.mp4
+.DS_Store
+
+# Created by https://www.toptal.com/developers/gitignore/api/react
+# Edit at https://www.toptal.com/developers/gitignore?templates=react
+
+### react ###
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+client/node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
+
+# End of https://www.toptal.com/developers/gitignore/api/react
 
 .vscode
-```
