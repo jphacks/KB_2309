@@ -12,11 +12,12 @@ COPY model/pose_deploy_linevec.prototxt /app/
 COPY model/pose_iter_440000.caffemodel /app/
 
 # 必要なファイルをコピー
-COPY app.py /app/
 COPY requirements.txt /app/
 
 # 依存関係をインストール
 RUN pip install -r requirements.txt
+
+WORKDIR /app/python-app
 
 # アプリケーションを実行
 CMD ["python", "app.py"]

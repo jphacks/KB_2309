@@ -8,3 +8,4 @@ services:
     volumes:
       - ./python-app:/app/python-app
       - ./img:/app/img
+      - /dev/video0:/dev/video0

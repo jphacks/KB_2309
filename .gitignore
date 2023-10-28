@@ -1,2 +1,11 @@
 # Model too big
 python-app/model/pose_iter_440000.caffemodel
+
+# Remove pycache
+python-app/__pycache__
+
+# Recording output
+python-app/recording/file.csv
+
+# Video test
+python-app/video/*.mp4
