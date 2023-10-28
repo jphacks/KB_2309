@@ -1,3 +1,2 @@
 # Model too big
-python-app/model/pose_deploy_linevec.prototxt
 python-app/model/pose_iter_440000.caffemodel
