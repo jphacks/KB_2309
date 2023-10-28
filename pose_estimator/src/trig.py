@@ -1,6 +1,6 @@
 import numpy as np
 
-def five_angle(points):
+def backLegsAngle(points):
     
     knee_left = np.array(points[12])
     knee_right = np.array(points[9])
@@ -22,7 +22,44 @@ def five_angle(points):
     dot_product_b = np.dot(back, h)
     dot_product_l = np.dot(legs, h)
     
-    return (np.degrees(np.arccos(dot_product_b / (m_b * m_h))),np.degrees(np.arccos(dot_product_b / (m_l * m_h))))
+    return (np.degrees(np.arccos(dot_product_b / (m_b * m_h))),np.degrees(np.arccos(dot_product_l / (m_l * m_h))))
+
+def shouldersNeck(points):
+    
+    head = np.array(points[0])
+    neck_base = np.array(points[1])
+    up = head - neck_base
+    shoulder_right = np.array(points[2])
+    right = shoulder_right - neck_base
+    shoulder_left = np.array(points[5])
+    left = shoulder_left - neck_base
+    h = np.array([1,0])
+    
+    m_l = np.linalg.norm(left)
+    m_r = np.linalg.norm(right)
+    m_u = np.linalg.norm(up)
+    m_h = np.linalg.norm(h)
+    
+    dot_product_l = np.dot(left, h)
+    dot_product_r = np.dot(right, h)
+    dot_product_u = np.dot(up, h)
+    
+    return (
+        np.degrees(np.arccos(dot_product_l / (m_l * m_h))),
+        np.degrees(np.arccos(dot_product_r / (m_r * m_h))),
+        np.degrees(np.arccos(dot_product_u / (m_u * m_h))))
+
+def getTilt(pointA, pointB):
+    line = np.array(pointB - pointA)
+    h = np.array([1,0])
+    if line[0] < 0: line = -line
+    m_l = np.linalg.norm(line)
+    m_h = np.linalg.norm(h)
+    dot_product = np.dot(line, h)
+    return np.degeres(np.arccos(dot_product / (m_l * m_h)))
+    
+def angleTreshold(angle, target, treshold=5.0):
+    return angle < target + treshold and angle > target - treshold 
 
 def to_joints(list):
     joints_list = np.array(list)

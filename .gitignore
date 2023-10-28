@@ -2,7 +2,7 @@
 pose_estimator/src/model/pose_iter_440000.caffemodel
 
 # Remove pycache
-src/__pycache__
+pose_estimator/src/__pycache__/
 
 # Recording output
 pose_estimator/src/recording/file.csv

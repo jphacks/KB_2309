@@ -1,26 +1,26 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from trig import five_angle, to_joints
+from trig import backLegsAngle, shouldersNeck, angleTreshold
 
-CAPTURE_FILE =  "video/test_video_straight.mp4"
+CAPTURE_FILE = 0 #"video/test_video_tilted.mp4"
 LINE_SCALE = 50
 
 rec = open('recording/file.csv', 'w')
 
 from io import TextIOWrapper
-def writeOnFile(data: list[list], file: TextIOWrapper):
+def writeOnFile(data, file):
     line = ""
     for point in range(len(data)):
         if data[point]:
-            line += f"({data[point][0]}, {data[point][1]})"
+            line += f"({data[point][0]}; {data[point][1]})"
         else:
-            line += "(None, None)"
+            line += "(None; None)"
         line += ("\n" if point == (len(data) - 1) else ", ")
-    # file.write(line)
-    # file.flush()
+    file.write(line)
+    file.flush()
     print(line)
-
+    
 newLine = 0
 
 def writeOnFrame(frame, text: tuple, good=True, position=(50,50)):
@@ -56,6 +56,7 @@ POSE_PAIRS = [[1,0] # neck-head
             ,[12,13] # knee-ankle left
 ]
 
+# TODO: add handling for frontal camera
 cap = cv2.VideoCapture(CAPTURE_FILE)
 desired_fps = 10
 cap.set(cv2.CAP_PROP_FPS, desired_fps)
@@ -110,23 +111,31 @@ while cap.isOpened():
         if points[partA] and points[partB]:
             cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
     
-    test = True
-    for i in [1,11,8,12,9]:
+    shoulders_neck = True
+    for i in [0,1,2,5]:
         if not points[i]:
-            test = False
-    if test:
-        back_angle, legs_angle = five_angle(points)
-        writeOnFrame(frame, 
-                 str(back_angle),
-                 back_angle > 90 and back_angle < 120)
-        writeOnFrame(frame, 
-                 str(legs_angle),
-                 back_angle < 10)
+            shoulders_neck = False
+    if shoulders_neck:
+        shoulders_left, shoulders_right, neck = shouldersNeck(points)
+        writeOnFrame(
+            frame,
+            "Left shoulder: " + f"{shoulders_left:.2f}",
+            angleTreshold(shoulders_left, 0, 6))
+        writeOnFrame(
+            frame,
+            "Right shoulder: " + f"{shoulders_right:.2f}",
+            angleTreshold(shoulders_right, 180, 6))        
+        writeOnFrame(
+            frame,
+            "Neck: " + f"{neck:.2f}",
+            angleTreshold(neck, 90, 8))
+    
+    for i in [0,14,15,16,17]
     
     newLine = 0
     
     cv2.imshow('Skeleton', frame)
-    # writeOnFile(points, rec)
+    #writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
