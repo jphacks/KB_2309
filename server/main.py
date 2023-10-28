@@ -1,36 +1,28 @@
-from flask import Flask, render_template_string, send_from_directory
+from flask import Flask, Blueprint, request
+from flask_cors import CORS
+from werkzeug.utils import secure_filename
+import os
 
-app = Flask(__name__, "/public/static")
+app = Flask(__name__)
+api = Blueprint('api', __name__, url_prefix='/api')
+cors = CORS(api, resources={r'/api/*': {'origins': 'http://localhost:3000'}})
 
-@app.route("/")
-def home():
-    html = """
-    <!doctype html>
-    <html>
-    <head>
-        <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
-    </head>
-    <body>
-        Pyodide test page <br>
-        Open your browser console to see Pyodide output
-        <script type="text/javascript">
-        async function main(){
-            const res = await window.fetch("public/sample.py");
-            const pycode = await res.text();
+save_path = './storage/'
+img_buf_limit = 10
 
-            let pyodide = await loadPyodide();
-            await pyodide.loadPackage("opencv-python");
-            console.log("Pyodide is ready.");
-            await pyodide.runPython(pycode);
-        }
-        main();
-        </script>
-    </body>
-    </html>
-    """
-    return render_template_string(html)
+@api.route("/pose_estimate", methods=['POST'])
+def pose_estimate():
+    for cnt in range(img_buf_limit):
+        key = 'image_' + str(cnt)
+        if key not in request.files:
+            return 'No file part', 400
+        file = request.files[key]
+        if file.filename == '':
+            return 'No selected file', 400
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(save_path, filename))
+            print('File saved: ' + filename)
+    return 'File uploaded successfully', 200
 
-# 静的ファイルの配信
-@app.route("/public/<path:path>")
-def send_public(path):
-    return send_from_directory("public/static", path)
+app.register_blueprint(api)
