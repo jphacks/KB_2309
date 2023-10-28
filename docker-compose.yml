@@ -1,0 +1,9 @@
+version: '3'
+services:
+  python-app:
+    build:
+      context: ./python-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./python-app:/app/python-app
