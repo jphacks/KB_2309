@@ -9,3 +9,5 @@ src/recording/file.csv
 
 # Video test
 src/video/*.mp4
+python-app/model/learnopencv
+.DS_Store

@@ -1,6 +1,6 @@
 version: '3'
 services:
-  src:
+  pose_estimator:
     build:
       context: ./src
     ports:
@@ -9,3 +9,10 @@ services:
       - ./src:/app/src
       - ./img:/app/img
       - /dev/video0:/dev/video0
+  server:
+    build:
+      context: ./server
+    ports:
+      - "8080:5000"
+    volumes:
+      - ./server:/app/server
