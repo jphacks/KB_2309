@@ -1,13 +1,11 @@
 # Model too big
-src/model/pose_iter_440000.caffemodel
+pose_estimator/src/model/pose_iter_440000.caffemodel
 
 # Remove pycache
 src/__pycache__
 
 # Recording output
-src/recording/file.csv
+pose_estimator/src/recording/file.csv
 
 # Video test
-src/video/*.mp4
-python-app/model/learnopencv
-.DS_Store
+pose_estimator/src/video/*.mp4
