@@ -3,24 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from trig import tiltGood, wrapTilt, loadConfig
 
-CAPTURE_FILE = 0 #"video/test_video_tilted.mp4"
 LINE_SCALE = 30
 
 rec = open('recording/file.csv', 'w')
 dump = open('recording/out.csv', 'w')
 config = loadConfig('config.csv')
-
-from io import TextIOWrapper
-def writeOnFile(data, file):
-    line = ""
-    for point in range(len(data)):
-        if data[point]:
-            line += f"({data[point][0]}, {data[point][1]})"
-        else:
-            line += "(None, None)"
-        line += ("\n" if point == (len(data) - 1) else "; ")
-    file.write(line)
-    file.flush()
 
 def dumpToFile(data, file):
     line = ""
@@ -83,23 +70,12 @@ POSE_PAIRS = [[1,0] # neck-head
             ,[12,13] # knee-ankle left
 ]
 
-# TODO: add handling for frontal camera
-cap = cv2.VideoCapture(CAPTURE_FILE)
-desired_fps = 10
-cap.set(cv2.CAP_PROP_FPS, desired_fps)
-
-frameWidth = int(cap.get(3))
-frameHeight = int(cap.get(4))
 threshold = 0.01
-
 
 inWidth = 320  # Adjust to a lower resolution
 inHeight = 240  # Adjust to a lower resolution
 
-
 net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
-
-print("head_tilt\tneck_tilt\tshoulders")
 
 line = ""
 for key in config.keys():
@@ -108,10 +84,18 @@ line = line[:-2]
 line += "\n"    
 dump.write(line)
 
-while cap.isOpened():
-    ret, frame = cap.read()  # ビデオからフレームを読み込む
-    if not ret:
-        break
+img_list = []
+import os
+img_dir = 'output_images'
+if os.path.exists(img_dir) and os.path.isdir(img_dir):
+    img_list = [
+        os.path.join(img_dir, file)
+        for file in os.listdir(img_dir)
+        if os.path.isfile(os.path.join(img_dir, file))]
+
+for img in img_list:
+    frame = cv2.imread(img)
+    print(f"Processing: {img}")
 
     # フレームをネットワークの入力形式に変換
     inpBlob = cv2.dnn.blobFromImage(frame, 1.0 / 255, (inWidth, inHeight), (0, 0, 0), swapRB=False, crop=False)
@@ -124,6 +108,9 @@ while cap.isOpened():
     # Empty list to store the detected keypoints
     points = []
 
+    frameWidth = frame.shape[1]
+    frameHeight = frame.shape[0]
+
     for i in range(nPoints):
         probMap = output[0, i, :, :]
         minVal, prob, minLoc, point = cv2.minMaxLoc(probMap)
@@ -134,34 +121,30 @@ while cap.isOpened():
         if prob > threshold:
             # cv2.circle(frameCopy, (int(x), int(y)), 8, (0, 255, 255), thickness=-1, lineType=cv2.FILLED)
             # cv2.putText(frameCopy, "{}".format(i), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, lineType=cv2.LINE_AA)
-            cv2.circle(frame, (int(x), int(y)), 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
+            # cv2.circle(frame, (int(x), int(y)), 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
 
             points.append((int(x), int(y)))
         else:
             points.append(None)
 
-    for pair in POSE_PAIRS:
-        partA = pair[0]
-        partB = pair[1]
+    # for pair in POSE_PAIRS:
+    #     partA = pair[0]
+    #     partB = pair[1]
 
-        if points[partA] and points[partB]:
-            cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
+    #     if points[partA] and points[partB]:
+    #         cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
 
     collect = []
     for key, val in config.items():
         check = tiltGood(points, val)
-        writeCond(frame, f"{key}: {wrapTilt(points, val):.2f}", val, check)
+        # writeCond(frame, f"{key}: {wrapTilt(points, val):.2f}", val, check)
         collect.append([key, check])
     dumpToFile(collect, dump)
     
-    newLine = 0
+    # newLine = 0
     
-    cv2.imshow('Skeleton', frame)
-    writeOnFile(points, rec)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # cv2.imshow('Skeleton', frame)
 
-cap.release()
 cv2.destroyAllWindows()
 
 print("code finish")
