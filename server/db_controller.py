@@ -37,8 +37,10 @@ def get_photos_by_access_id(access_id):
     cur = conn.cursor()
     cur.execute("SELECT * FROM side_photos WHERE access_id=?", (access_id,))
     side_photos = cur.fetchall()
-    cur.execute("SELECT * FROM front_photos WHERE access_id=?", (access_id,))
-    front_photos = cur.fetchall()
+    if len(side_photos) == 0:
+        return None
+    # cur.execute("SELECT * FROM front_photos WHERE access_id=?", (access_id,))
+    # front_photos = cur.fetchall()
     cur.close()
-    return side_photos, front_photos
+    return side_photos#, front_photos
 
