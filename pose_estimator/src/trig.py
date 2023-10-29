@@ -22,12 +22,29 @@ def five_angle(points):
     dot_product_b = np.dot(back, h)
     dot_product_l = np.dot(legs, h)
     
-    return (np.degrees(np.arccos(dot_product_b / (m_b * m_h))),np.degrees(np.arccos(dot_product_b / (m_l * m_h))))
+    return (np.degrees(np.arccos(dot_product_b / (m_b * m_h))),np.degrees(np.arccos(dot_product_l / (m_l * m_h))))
 
-def to_joints(list):
-    joints_list = np.array(list)
+
+
+def to_joints(lst):
+    # Ensure that all sublists have the same length
+    max_len = max(len(sublist) if sublist is not None else 0 for sublist in lst)
+    joints_list = [list(sublist) if sublist is not None else None for sublist in lst]
+    
+    # Pad sublists with None values to make them of equal length
+    for sublist in joints_list:
+        if sublist is not None and len(sublist) < max_len:
+            sublist.extend([None] * (max_len - len(sublist)))
+    
     print(joints_list)
+    
+    # Convert the list of lists to a NumPy array
+    joints_array = np.array(joints_list)
+    print(joints_array)
+    
     joints = {}
+
+
     joints["head"] = joints_list[0]
     joints["neck"] = joints_list[1]
     joints["eye-right"] = joints_list[14]
