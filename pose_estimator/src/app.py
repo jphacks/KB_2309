@@ -7,6 +7,7 @@ CAPTURE_FILE = 0 #"video/test_video_tilted.mp4"
 LINE_SCALE = 30
 
 rec = open('recording/file.csv', 'w')
+dump = open('recording/out.csv', 'w')
 config = loadConfig('config.csv')
 
 from io import TextIOWrapper
@@ -20,17 +21,38 @@ def writeOnFile(data, file):
         line += ("\n" if point == (len(data) - 1) else "; ")
     file.write(line)
     file.flush()
+
+def dumpToFile(data, file):
+    line = ""
+    for val in range(len(data)):
+        line += f"{data[val][1]}"
+        line += "\n" if val == len(data) - 1 else ", "
+    file.write(line)
+    file.flush()
     
 newLine = 0
 
-def writeCond(frame, text: tuple, good=0, position=(50,50)):
+def colCode(stat="na") -> tuple:
+    if stat=="na":
+        return (0,0,0)
+    elif stat == "ok":
+        return (0,255,0)
+    elif stat == "lo":
+        return (0,0,255)
+    elif stat == "hi":
+        return (255,0,0)
+
+def writeCond(frame, text: tuple, val, stat="na", position=(50,50)):
     global newLine
-    if good > -1:
-        print(f"{'good' if good > 0 else 'bad'}\t\t", end="")
-        cv2.putText(frame, text, (position[0], position[1] + newLine), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0) if good > 0 else (0,0,255), 2)
+    if stat != "na":
+        cv2.putText(
+            frame,
+            text + " " + (f"[{val[-1][-1]}]" if stat == "hi" else f"[{val[-1][0]}]" if stat == "lo" else ""),
+            (position[0], position[1] + newLine),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            colCode(stat), 2)
         newLine += LINE_SCALE
-    else:
-        print("\t\t", end="")
     
 
 protoFile = "model/pose_deploy_linevec.prototxt"
@@ -79,6 +101,13 @@ net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
 print("head_tilt\tneck_tilt\tshoulders")
 
+line = ""
+for key in config.keys():
+    line += f"{key}, "
+line = line[:-2]
+line += "\n"    
+dump.write(line)
+
 while cap.isOpened():
     ret, frame = cap.read()  # ビデオからフレームを読み込む
     if not ret:
@@ -118,15 +147,17 @@ while cap.isOpened():
         if points[partA] and points[partB]:
             cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
 
+    collect = []
     for key, val in config.items():
         check = tiltGood(points, val)
-        writeCond(frame, f"{key}: {wrapTilt(points, val):.2f}", check)
+        writeCond(frame, f"{key}: {wrapTilt(points, val):.2f}", val, check)
+        collect.append([key, check])
+    dumpToFile(collect, dump)
     
-    print("")
     newLine = 0
     
     cv2.imshow('Skeleton', frame)
-    # writeOnFile(points, rec)
+    writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

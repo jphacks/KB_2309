@@ -57,7 +57,7 @@ def getTilt (pointA, pointB):
         m_h = np.linalg.norm(h)
         dot_product = np.dot(line, h)
         return np.degrees(np.arccos(dot_product / (m_l * m_h)))
-    return 0
+    return 0.0
 
 def wrapTilt(points, val):
     pointA, pointB = points[val[0]], points[val[1]]
@@ -68,7 +68,7 @@ def getTriTilt(pointA, pointB, pointC):
     secondLine = getTilt(pointB, pointC)
     return firstLine - secondLine
 
-def tiltGood(points: tuple, val: tuple) -> int:
+def tiltGood(points: tuple, val: tuple) -> str:
     """check if the line is close to a certain angle within a treshold
 
     Args:
@@ -77,25 +77,44 @@ def tiltGood(points: tuple, val: tuple) -> int:
         treshold (float, optional): angle treshold (deg). Defaults to 5.0.
 
     Returns:
-        int: tribool:
-        - 1: in treshold
-        - 0: out treshold
-        - -1: not detected
+        string: abbreviation of status
+        - hi: too_high
+        - lo: too_low
+        - ok: in_treshold
+        - na: not detected
     """
-    id1, id2, target, treshold = val
+    id1, id2, target, treshold, _ = val
     A, B = points[id1], points[id2]
     if A and B:
         angle = wrapTilt(points, val)
-        return 1 if angle < target + treshold and angle > target - treshold else 0
-    return -1
+        if angle < target - treshold:
+            return "lo"
+        elif angle > target + treshold:
+            return "hi"
+        else: return "ok"
+    return "na"
+
+idx_joints = [
+    "head", "neck",
+    "shoulder_right", "elbow_right", "wrist_right",
+    "shoulder_left", "elbow_left", "wrist_left",
+    "hip_right", "knee_right", "ankle_right",
+    "hip_left", "knee_left", "ankle_left",
+    "eye_right", "eye_left",
+    "ear_right", "ear_left"]
 
 def loadConfig(filename):
     conf = {}
     with open(filename, newline='') as csvfile:
         for line in csvfile:
-            val = line.split(",")
-            if len(val) != 5: print(f"Config Error, specify 5 values (name, pointA, pointB, target, treshold)\nFound\"{line}\""); exit(1)
-            conf[val[0].replace(" ", "")] = (int(val[1]), int(val[2]), float(val[3]), float(val[4]))
+            val = line.split(";")
+            if len(val) < 6 or len(val) > 7: print(f"Config Error, specify 5 values (name; nameof_pointA; nameof_pointB; target angle; treshold; comment1 [; comment_too_high])\nFound\"{line}\""); exit(1)
+            conf[val[0].replace(" ", "")] = (
+                idx_joints.index(val[1].replace(" ", "")),
+                idx_joints.index(val[2].replace(" ", "")),
+                float(val[3]),
+                float(val[4]),
+                (val[5].lstrip(), val[-1].lstrip()))
     return conf
             
 
@@ -111,7 +130,7 @@ def to_joints(list):
     joints["ear-left"] = joints_list[17]
     joints["shoulder-right"] = joints_list[2]
     joints["elbow-right"] = joints_list[3]
-    joints["wirst-right"] = joints_list[4]
+    joints["wrist-right"] = joints_list[4]
     joints["hip-right"] = joints_list[8]
     joints["knee-right"] = joints_list[9]
     joints["ankle-right"] = joints_list[10]
