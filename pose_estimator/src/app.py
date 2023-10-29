@@ -13,10 +13,10 @@ def writeOnFile(data, file):
     line = ""
     for point in range(len(data)):
         if data[point]:
-            line += f"({data[point][0]}; {data[point][1]})"
+            line += f"({data[point][0]}, {data[point][1]})"
         else:
-            line += "(None; None)"
-        line += ("\n" if point == (len(data) - 1) else ", ")
+            line += "(None, None)"
+        line += ("\n" if point == (len(data) - 1) else "; ")
     file.write(line)
     file.flush()
     
@@ -130,7 +130,7 @@ while cap.isOpened():
     newLine = 0
     
     # cv2.imshow('Skeleton', frame)
-    # writeOnFile(points, rec)
+    writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
