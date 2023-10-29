@@ -87,7 +87,7 @@ while cap.isOpened():
     inpBlob = cv2.dnn.blobFromImage(frame, 1.0 / 255, (inWidth, inHeight), (0, 0, 0), swapRB=False, crop=False)
     net.setInput(inpBlob)
     output = net.forward()
-    frameCopy = np.copy(frame)
+    # frameCopy = np.copy(frame)
     H = output.shape[2]
     W = output.shape[3]
 
@@ -102,8 +102,8 @@ while cap.isOpened():
         y = (frameHeight * point[1]) / H
 
         if prob > threshold:
-            cv2.circle(frameCopy, (int(x), int(y)), 8, (0, 255, 255), thickness=-1, lineType=cv2.FILLED)
-            cv2.putText(frameCopy, "{}".format(i), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, lineType=cv2.LINE_AA)
+            # cv2.circle(frameCopy, (int(x), int(y)), 8, (0, 255, 255), thickness=-1, lineType=cv2.FILLED)
+            # cv2.putText(frameCopy, "{}".format(i), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, lineType=cv2.LINE_AA)
             cv2.circle(frame, (int(x), int(y)), 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
 
             points.append((int(x), int(y)))
@@ -129,8 +129,8 @@ while cap.isOpened():
     print("")
     newLine = 0
     
-    #cv2.imshow('Skeleton', frame)
-    writeOnFile(points, rec)
+    # cv2.imshow('Skeleton', frame)
+    # writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
