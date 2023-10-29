@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from trig import tiltGood, getTilt, loadConfig
+from trig import tiltGood, wrapTilt, loadConfig
 
 CAPTURE_FILE = 0 #"video/test_video_tilted.mp4"
-LINE_SCALE = 50
+LINE_SCALE = 30
 
 rec = open('recording/file.csv', 'w')
 config = loadConfig('config.csv')
@@ -118,20 +118,15 @@ while cap.isOpened():
         if points[partA] and points[partB]:
             cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
 
-    neck_good = tiltGood((points[1], points[0]), config["neck"])     
-    writeCond(frame, f"neck: {getTilt(points[1],points[0]):.2f}:{90}", neck_good)
-    
-    shoulders_good = tiltGood((points[2], points[5]), config["shoulders"])
-    writeCond(frame, f"Shoulders: {getTilt(points[1],points[5]):.2f}:{0}", shoulders_good)
-    
-    head_good = tiltGood((points[16], points[17]), config["head"])
-    writeCond(frame, f"Head tilt: {getTilt(points[16],points[17]):.2f}:{0}", head_good)
+    for key, val in config.items():
+        check = tiltGood(points, val)
+        writeCond(frame, f"{key}: {wrapTilt(points, val):.2f}", check)
     
     print("")
     newLine = 0
     
-    # cv2.imshow('Skeleton', frame)
-    writeOnFile(points, rec)
+    cv2.imshow('Skeleton', frame)
+    # writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

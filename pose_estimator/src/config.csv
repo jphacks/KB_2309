@@ -1,3 +1,4 @@
-shoulders, 0, 6
-neck, 90, 8
-head, 0, 5
+shoulders, 2, 5, 0, 6
+neck, 1, 0, 90, 8
+head, 16, 17, 0, 5
+elbows, 3, 6, 0, 5

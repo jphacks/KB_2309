@@ -59,12 +59,16 @@ def getTilt (pointA, pointB):
         return np.degrees(np.arccos(dot_product / (m_l * m_h)))
     return 0
 
+def wrapTilt(points, val):
+    pointA, pointB = points[val[0]], points[val[1]]
+    return getTilt(pointA, pointB)
+
 def getTriTilt(pointA, pointB, pointC):
     firstLine = getTilt(pointB, pointA)
     secondLine = getTilt(pointB, pointC)
     return firstLine - secondLine
 
-def tiltGood(line: tuple, tt: tuple) -> int:
+def tiltGood(points: tuple, val: tuple) -> int:
     """check if the line is close to a certain angle within a treshold
 
     Args:
@@ -78,11 +82,10 @@ def tiltGood(line: tuple, tt: tuple) -> int:
         - 0: out treshold
         - -1: not detected
     """
-    target, treshold = tt
-    if not line: return -1
-    A, B = line
+    id1, id2, target, treshold = val
+    A, B = points[id1], points[id2]
     if A and B:
-        angle = getTilt(A, B)
+        angle = wrapTilt(points, val)
         return 1 if angle < target + treshold and angle > target - treshold else 0
     return -1
 
@@ -91,8 +94,8 @@ def loadConfig(filename):
     with open(filename, newline='') as csvfile:
         for line in csvfile:
             val = line.split(",")
-            if len(val) != 3: print(f"Config Error, specify 3 values (name, target, treshold)\nFound\"{line}\""); exit(1)
-            conf[val[0].replace(" ", "")] = (float(val[1]), float(val[2]))
+            if len(val) != 5: print(f"Config Error, specify 5 values (name, pointA, pointB, target, treshold)\nFound\"{line}\""); exit(1)
+            conf[val[0].replace(" ", "")] = (int(val[1]), int(val[2]), float(val[3]), float(val[4]))
     return conf
             
 
