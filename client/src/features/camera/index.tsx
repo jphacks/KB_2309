@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
+import { Box, Center } from "@chakra-ui/react";
 
 const url = 'http://localhost:8080/api/pose_estimate';
 const intervalTime = 500;
@@ -11,8 +12,8 @@ const [bufCount, setBufCount] = useState(0);
 const imageBuf = useRef<string[]>([]);
 const imageType = 'image/jpeg';
 const videoConstraints = {
-    width: 720,
-    height: 360,
+    width: 1200,
+    height: 820,
     facingMode: "environment",
 };
 
@@ -59,14 +60,21 @@ useEffect(() => {
 }, [imageBuf, bufCount]);
 
 return (
-    <Webcam
-        audio={false}
-        width={540}
-        height={360}
-        ref={webcamRef}
-        screenshotFormat={imageType}
-        videoConstraints={videoConstraints}
-    />
+    <>
+    <Center marginBottom={50}>
+    <Box maxW='lg' borderWidth='1px' borderRadius='lg' overflow='hidden'>
+        <Webcam
+            audio={false}
+            width={540}
+            height={360}
+            ref={webcamRef}
+            screenshotFormat={imageType}
+            videoConstraints={videoConstraints}
+        />
+    </Box>
+    </Center>
+    </>
+    
 );
 }
 
