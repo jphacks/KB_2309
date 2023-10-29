@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from trig import backLegsAngle, shouldersNeck, angleTreshold
+from trig import tiltGood, getTilt
 
 CAPTURE_FILE = 0 #"video/test_video_tilted.mp4"
 LINE_SCALE = 50
@@ -23,10 +23,15 @@ def writeOnFile(data, file):
     
 newLine = 0
 
-def writeOnFrame(frame, text: tuple, good=True, position=(50,50)):
+def writeCond(frame, text: tuple, good=0, position=(50,50)):
     global newLine
-    cv2.putText(frame, text, (position[0], position[1] + newLine), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0) if good else (0,0,255), 2)
-    newLine += LINE_SCALE
+    if good > -1:
+        print(f"{'good' if good > 0 else 'bad'}\t\t", end="")
+        cv2.putText(frame, text, (position[0], position[1] + newLine), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0) if good > 0 else (0,0,255), 2)
+        newLine += LINE_SCALE
+    else:
+        print("\t\t", end="")
+    
 
 protoFile = "model/pose_deploy_linevec.prototxt"
 weightsFile = "model/pose_iter_440000.caffemodel"
@@ -72,6 +77,8 @@ inHeight = 240  # Adjust to a lower resolution
 
 net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
+print("head_tilt\tneck_tilt\tshoulder_left\tshoulder_right\t")
+
 while cap.isOpened():
     ret, frame = cap.read()  # ビデオからフレームを読み込む
     if not ret:
@@ -110,28 +117,20 @@ while cap.isOpened():
 
         if points[partA] and points[partB]:
             cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
+
+    neck_good = tiltGood((points[1], points[0]), 90, 8)     
+    writeCond(frame, f"Neck: {getTilt(points[1],points[0]):.2f}:{90}", neck_good)
     
-    shoulders_neck = True
-    for i in [0,1,2,5]:
-        if not points[i]:
-            shoulders_neck = False
-    if shoulders_neck:
-        shoulders_left, shoulders_right, neck = shouldersNeck(points)
-        writeOnFrame(
-            frame,
-            "Left shoulder: " + f"{shoulders_left:.2f}",
-            angleTreshold(shoulders_left, 0, 6))
-        writeOnFrame(
-            frame,
-            "Right shoulder: " + f"{shoulders_right:.2f}",
-            angleTreshold(shoulders_right, 180, 6))        
-        writeOnFrame(
-            frame,
-            "Neck: " + f"{neck:.2f}",
-            angleTreshold(neck, 90, 8))
+    left_should_good = tiltGood((points[1], points[5]), 0, 6)
+    writeCond(frame, f"Shoulder left: {getTilt(points[1],points[5]):.2f}:{0}", left_should_good)
     
-    for i in [0,14,15,16,17]
+    right_should_good = tiltGood((points[1], points[2]), 180, 6)
+    writeCond(frame, f"Shoulder right: {getTilt(points[1],points[2]):.2f}:{180}", right_should_good)
     
+    head_good = tiltGood((points[16], points[17]), 0, 6)
+    writeCond(frame, f"Head tilt: {getTilt(points[16],points[17]):.2f}:{0}", head_good)
+    
+    print("")
     newLine = 0
     
     cv2.imshow('Skeleton', frame)

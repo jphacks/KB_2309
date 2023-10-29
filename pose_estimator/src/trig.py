@@ -49,17 +49,36 @@ def shouldersNeck(points):
         np.degrees(np.arccos(dot_product_r / (m_r * m_h))),
         np.degrees(np.arccos(dot_product_u / (m_u * m_h))))
 
-def getTilt(pointA, pointB):
-    line = np.array(pointB - pointA)
-    h = np.array([1,0])
-    if line[0] < 0: line = -line
-    m_l = np.linalg.norm(line)
-    m_h = np.linalg.norm(h)
-    dot_product = np.dot(line, h)
-    return np.degeres(np.arccos(dot_product / (m_l * m_h)))
-    
-def angleTreshold(angle, target, treshold=5.0):
-    return angle < target + treshold and angle > target - treshold 
+def getTilt (pointA, pointB):
+    if pointA and pointB:
+        line = np.array(np.array(pointB) - np.array(pointA))
+        h = np.array([1,0])
+        m_l = np.linalg.norm(line)
+        m_h = np.linalg.norm(h)
+        dot_product = np.dot(line, h)
+        return np.degrees(np.arccos(dot_product / (m_l * m_h)))
+    return 0
+
+def tiltGood(line: tuple, target: float, treshold=5.0) -> int:
+    """check if the line is close to a certain angle within a treshold
+
+    Args:
+        line (tuple): containing the two points
+        target (float): target angle
+        treshold (float, optional): angle treshold (deg). Defaults to 5.0.
+
+    Returns:
+        int: tribool:
+        - 1: in treshold
+        - 0: out treshold
+        - -1: not detected
+    """
+    if not line: return -1
+    A, B = line
+    if A and B:
+        angle = getTilt(A, B)
+        return 1 if angle < target + treshold and angle > target - treshold else 0
+    return -1
 
 def to_joints(list):
     joints_list = np.array(list)
