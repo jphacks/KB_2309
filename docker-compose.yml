@@ -15,4 +15,4 @@ services:
     ports:
       - "8080:5000"
     volumes:
-      - ./server:/app/server
+      - ./server:/app/
