@@ -19,7 +19,6 @@ def writeOnFile(data, file):
         line += ("\n" if point == (len(data) - 1) else ", ")
     file.write(line)
     file.flush()
-    print(line)
     
 newLine = 0
 
@@ -77,7 +76,7 @@ inHeight = 240  # Adjust to a lower resolution
 
 net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
-print("head_tilt\tneck_tilt\tshoulder_left\tshoulder_right\t")
+print("head_tilt\tneck_tilt\tshoulders")
 
 while cap.isOpened():
     ret, frame = cap.read()  # ビデオからフレームを読み込む
@@ -121,11 +120,8 @@ while cap.isOpened():
     neck_good = tiltGood((points[1], points[0]), 90, 8)     
     writeCond(frame, f"Neck: {getTilt(points[1],points[0]):.2f}:{90}", neck_good)
     
-    left_should_good = tiltGood((points[1], points[5]), 0, 6)
+    left_should_good = tiltGood((points[2], points[5]), 0, 6)
     writeCond(frame, f"Shoulder left: {getTilt(points[1],points[5]):.2f}:{0}", left_should_good)
-    
-    right_should_good = tiltGood((points[1], points[2]), 180, 6)
-    writeCond(frame, f"Shoulder right: {getTilt(points[1],points[2]):.2f}:{180}", right_should_good)
     
     head_good = tiltGood((points[16], points[17]), 0, 6)
     writeCond(frame, f"Head tilt: {getTilt(points[16],points[17]):.2f}:{0}", head_good)
@@ -133,8 +129,8 @@ while cap.isOpened():
     print("")
     newLine = 0
     
-    cv2.imshow('Skeleton', frame)
-    #writeOnFile(points, rec)
+    #cv2.imshow('Skeleton', frame)
+    writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
