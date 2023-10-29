@@ -41,7 +41,10 @@
 
 ## 開発技術
 - react
+- TypeScript
 - python
+<img width="739" alt="image" src="https://github.com/jphacks/KB_2309/assets/67719334/222cf23b-1d2b-4900-ba05-481ebbda82c7">
+
 ### 活用した技術
 - Deep Learning
 
