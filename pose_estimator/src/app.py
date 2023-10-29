@@ -1,12 +1,13 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from trig import tiltGood, getTilt
+from trig import tiltGood, getTilt, loadConfig
 
 CAPTURE_FILE = 0 #"video/test_video_tilted.mp4"
 LINE_SCALE = 50
 
 rec = open('recording/file.csv', 'w')
+config = loadConfig('config.csv')
 
 from io import TextIOWrapper
 def writeOnFile(data, file):
@@ -117,13 +118,13 @@ while cap.isOpened():
         if points[partA] and points[partB]:
             cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
 
-    neck_good = tiltGood((points[1], points[0]), 90, 8)     
-    writeCond(frame, f"Neck: {getTilt(points[1],points[0]):.2f}:{90}", neck_good)
+    neck_good = tiltGood((points[1], points[0]), config["neck"])     
+    writeCond(frame, f"neck: {getTilt(points[1],points[0]):.2f}:{90}", neck_good)
     
-    left_should_good = tiltGood((points[2], points[5]), 0, 6)
-    writeCond(frame, f"Shoulder left: {getTilt(points[1],points[5]):.2f}:{0}", left_should_good)
+    shoulders_good = tiltGood((points[2], points[5]), config["shoulders"])
+    writeCond(frame, f"Shoulders: {getTilt(points[1],points[5]):.2f}:{0}", shoulders_good)
     
-    head_good = tiltGood((points[16], points[17]), 0, 6)
+    head_good = tiltGood((points[16], points[17]), config["head"])
     writeCond(frame, f"Head tilt: {getTilt(points[16],points[17]):.2f}:{0}", head_good)
     
     print("")

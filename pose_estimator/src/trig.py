@@ -59,12 +59,17 @@ def getTilt (pointA, pointB):
         return np.degrees(np.arccos(dot_product / (m_l * m_h)))
     return 0
 
-def tiltGood(line: tuple, target: float, treshold=5.0) -> int:
+def getTriTilt(pointA, pointB, pointC):
+    firstLine = getTilt(pointB, pointA)
+    secondLine = getTilt(pointB, pointC)
+    return firstLine - secondLine
+
+def tiltGood(line: tuple, tt: tuple) -> int:
     """check if the line is close to a certain angle within a treshold
 
     Args:
         line (tuple): containing the two points
-        target (float): target angle
+        tt (tuple): float, float target and treshold
         treshold (float, optional): angle treshold (deg). Defaults to 5.0.
 
     Returns:
@@ -73,12 +78,23 @@ def tiltGood(line: tuple, target: float, treshold=5.0) -> int:
         - 0: out treshold
         - -1: not detected
     """
+    target, treshold = tt
     if not line: return -1
     A, B = line
     if A and B:
         angle = getTilt(A, B)
         return 1 if angle < target + treshold and angle > target - treshold else 0
     return -1
+
+def loadConfig(filename):
+    conf = {}
+    with open(filename, newline='') as csvfile:
+        for line in csvfile:
+            val = line.split(",")
+            if len(val) != 3: print(f"Config Error, specify 3 values (name, target, treshold)\nFound\"{line}\""); exit(1)
+            conf[val[0].replace(" ", "")] = (float(val[1]), float(val[2]))
+    return conf
+            
 
 def to_joints(list):
     joints_list = np.array(list)
