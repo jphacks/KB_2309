@@ -20,6 +20,7 @@ server/pose_estimator/output_images/*.jpg
 server/pose_estimator/video/*.mp4
 
 .vscode
+.env
 node_modules
 .DS_Store
 
