@@ -14,7 +14,7 @@ def get_frames(CAPTURE_FILE):
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     # Devide the video into 100 frames
-    step_size = total_frames // 100
+    step_size = total_frames // 200
 
     frames_list = []
     frame_number = 0
@@ -32,8 +32,7 @@ def get_frames(CAPTURE_FILE):
         frame_number += 1
 
         # Stop when the list is full
-        if len(frames_list) == 100:
+        if len(frames_list) == 200:
             break
 
     return frames_list, cap
-

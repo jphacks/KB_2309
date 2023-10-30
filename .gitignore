@@ -1,40 +1,27 @@
-# Model too big
-pose_estimator/src/model/pose_iter_440000.caffemodel
+# too big files
+server/pose_estimator/model/pose_iter_440000.caffemodel
+server/pose_estimator/output_images/*.jpg
+server/pose_estimator/recording/
 
 # Remove pycache
-pose_estimator/src/__pycache__/*.pyc
+server/pose_estimator/__pycache__/
 
 # Recording output
-pose_estimator/src/recording/file.csv
+server/pose_estimator/recording/file.csv
 
-pose_estimator/src/recording/*.mp4
-pose_estimator/src/output_images/*.jpg
+# Frame output
+server/pose_estimator/output_images/*.jpg
+
+server/pose_estimator/recording/*.mp4
+server/pose_estimator/output_images/*.jpg
 
 
 # Video test
-pose_estimator/src/video/*.mp4
-.DS_Store
-
-# Created by https://www.toptal.com/developers/gitignore/api/react
-# Edit at https://www.toptal.com/developers/gitignore?templates=react
-
-### react ###
-.DS_*
-*.log
-logs
-**/*.backup.*
-**/*.back.*
-
-client/node_modules
-bower_components
-
-*.sublime*
-
-psd
-thumb
-sketch
-
-# End of https://www.toptal.com/developers/gitignore/api/react
+server/pose_estimator/video/*.mp4
 
 .vscode
 .env
+node_modules
+.DS_Store
+
+!.gitkeep

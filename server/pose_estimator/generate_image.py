@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from trig import five_angle, to_joints
+from create_output_image import create_output_image
 
 from preprocess import get_frames
 
-CAPTURE_FILE =  "video/test_video_straight.mp4"
+CAPTURE_FILE =  "video/test_video_bad.mp4"
 LINE_SCALE = 50
 
 rec = open('recording/file.csv', 'w')
@@ -93,9 +94,9 @@ for num, frame in enumerate(frame_list):
         y = (frameHeight * point[1]) / H
 
         if prob > threshold:
-            cv2.circle(frameCopy, (int(x), int(y)), 8, (0, 255, 255), thickness=-1, lineType=cv2.FILLED)
-            cv2.putText(frameCopy, "{}".format(i), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, lineType=cv2.LINE_AA)
-            cv2.circle(frame, (int(x), int(y)), 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
+            # cv2.circle(frameCopy, (int(x), int(y)), 8, (0, 255, 255), thickness=-1, lineType=cv2.FILLED)
+            # cv2.putText(frameCopy, "{}".format(i), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, lineType=cv2.LINE_AA)
+            # cv2.circle(frame, (int(x), int(y)), 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
 
             points.append((int(x), int(y)))
         else:
@@ -105,27 +106,28 @@ for num, frame in enumerate(frame_list):
         partA = pair[0]
         partB = pair[1]
 
-        if points[partA] and points[partB]:
-            cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
+        # if points[partA] and points[partB]:
+        #     cv2.line(frame, points[partA], points[partB], (0, 255, 255), 3)
     
     test = True
     for i in [1,11,8,12,9]:
         if not points[i]:
             test = False
-    if test:
-        back_angle, legs_angle = five_angle(points)
-        writeOnFrame(frame, 
-                 str(back_angle),
-                 back_angle > 90 and back_angle < 120)
-        writeOnFrame(frame, 
-                 str(legs_angle),
-                 back_angle < 10)
+    # if test:
+    #     back_angle, legs_angle = five_angle(points)
+    #     writeOnFrame(frame, 
+    #              str(back_angle),
+    #              back_angle > 90 and back_angle < 120)
+    #     writeOnFrame(frame, 
+    #              str(legs_angle),
+    #              back_angle < 10)
     
     newLine = 0
     
-    # cv2.imshow('Skeleton', frame)
     
-    cv2.imwrite('output/frame_'+str(num)+'.jpg', frame)
+    create_output_image(frame, points, num)
+    
+
     writeOnFile(points, rec)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -134,3 +136,4 @@ cap.release()
 cv2.destroyAllWindows()
 
 print("code finish")
+

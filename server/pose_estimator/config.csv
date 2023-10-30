@@ -1,0 +1,4 @@
+shoulders;  shoulder_right; shoulder_left;  0;  6; You tilt your shoulders too much, try to keep them horizontal
+head;       ear_right;      ear_left;       0;  5; Your head is often tilted, this is bad for your neck
+upper_leg;  hip_right;      knee_right;     0;  5; Try to keep your legs parallel to the chair to avoid back pain
+back;       hip_right;      neck;           90; 5; You are often too close to the screen;                           Leaning backward for a long period of time is really bad for your coccyx

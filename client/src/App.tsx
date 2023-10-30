@@ -1,17 +1,22 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 import Capture from "./pages/Capture";
+import Header from "./features/header";
+import { ChakraProvider } from '@chakra-ui/react'
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
+      <ChakraProvider>
+        <div className="App">
+        <Header />
+        <BrowserRouter>
           <Routes>
             {/* <Route path='/' element={< />}/> */}
-            <Route path='/capture' element={<Capture />}/>
+            <Route path='/' element={<Capture />}/>
           </Routes>
         </BrowserRouter>
-    </div>
+        </div>
+      </ChakraProvider>
   );
 }
 
