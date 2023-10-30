@@ -44,7 +44,8 @@
 
 ## 開発技術
 ### システムアーキテクチャ
-<img width="739" alt="image" src="https://github.com/jphacks/KB_2309/assets/49334354/267899b4-f3a6-4429-b3d8-1aa411a78aa0">
+![image](https://github.com/jphacks/KB_2309/assets/49334354/167bd763-42d4-423d-9410-66ba2d4fdc7f)
+
 
 ### 活用した技術
 - Deep Learning
