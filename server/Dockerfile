@@ -1,14 +1,11 @@
-# ベースイメージを選択
-FROM python:3.9
+FROM python:3.8
 
-# ワークディレクトリを設定
+RUN apt-get update
+RUN apt-get install -y libgl1-mesa-glx
+
 WORKDIR /app
-
-# 必要なファイルをコピー
 ADD . /app
 
-# 依存関係をインストール
 RUN pip install -r requirements.txt
 
-# アプリケーションを実行
 CMD ["flask", "--app", "main", "run", "--host=0.0.0.0", "--reload"]

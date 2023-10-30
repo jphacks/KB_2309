@@ -1,18 +1,10 @@
 version: '3'
 services:
-  pose_estimator:
-    build:
-      context: ./pose_estimator/src
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./pose_estimator/src:/app/src
-      - ./img:/app/img
-      - /dev/video0:/dev/video0
   server:
     build:
       context: ./server
     ports:
       - "8080:5000"
     volumes:
-      - ./server:/app/
+      - ./server:/app/server
+      - /dev/video0:/dev/video0
