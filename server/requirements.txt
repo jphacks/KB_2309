@@ -9,3 +9,4 @@ Werkzeug==2.2.3
 zipp==3.15.0
 matplotlib
 opencv-python
+flask_cors==3.0.10

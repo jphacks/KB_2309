@@ -12,11 +12,15 @@ server/pose_estimator/recording/file.csv
 # Frame output
 server/pose_estimator/output_images/*.jpg
 
+pose_estimator/src/recording/*.mp4
+pose_estimator/src/output_images/*.jpg
+
+
 # Video test
 serverpose_estimator/video/*.mp4
 
 .vscode
-
 node_modules
+.DS_Store
 
 !.gitkeep
