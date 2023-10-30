@@ -36,4 +36,3 @@ def get_frames(CAPTURE_FILE):
             break
 
     return frames_list, cap
-
