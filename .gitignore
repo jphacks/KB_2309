@@ -1,18 +1,22 @@
-# Model too big
-server/pose_estimator/src/model/pose_iter_440000.caffemodel
+# too big files
+server/pose_estimator/model/pose_iter_440000.caffemodel
+server/pose_estimator/output_images/*.jpg
+server/pose_estimator/recording/
 
 # Remove pycache
-server/pose_estimator/src/__pycache__/
+server/pose_estimator/__pycache__/
 
 # Recording output
-server/pose_estimator/src/recording/file.csv
+server/pose_estimator/recording/file.csv
 
 # Frame output
-server/pose_estimator/src/output_images/*.jpg
+server/pose_estimator/output_images/*.jpg
 
 # Video test
-serverpose_estimator/src/video/*.mp4
+serverpose_estimator/video/*.mp4
 
 .vscode
 
 node_modules
+
+!.gitkeep
