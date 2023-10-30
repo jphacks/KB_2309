@@ -16,7 +16,8 @@
 最後に、１日の総合的な姿勢のサマリーをユーザにSlackやDiscordを使って送ります。
 
 デスクワーク中の理想的な姿勢の例：
-![deskwork_posture_002](https://github.com/jphacks/KB_2309/assets/67719334/abf8acfc-59cb-4d83-8385-5624f3f89209)
+![deskwork_posture_002](https://github.com/jphacks/KB_2309/assets/67719334/abf8acfc-59cb-4d83-8385-5624f3f89209){:height="200px" width="300px"}
+
 
 画像引用： https://www.irischitose.co.jp/blog/column/deskwork_posture/
 
